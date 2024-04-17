@@ -250,7 +250,7 @@
               v-model="form.maxConnectionPerServer"
               controls-position="right"
               :min="1"
-              :max="form.engineMaxConnectionPerServer"
+              :max="engineMaxConnectionPerServer"
               :label="$t('preferences.max-connection-per-server')">
             </el-input-number>
           </el-col>
@@ -316,6 +316,7 @@
     APP_RUN_MODE,
     EMPTY_STRING,
     ENGINE_MAX_CONCURRENT_DOWNLOADS,
+    ENGINE_MAX_CONNECTION_PER_SERVER,
     ENGINE_RPC_PORT
   } from '@shared/constants'
   import { reduceTrackerString } from '@shared/utils/tracker'
@@ -421,6 +422,9 @@
       },
       maxConcurrentDownloads () {
         return ENGINE_MAX_CONCURRENT_DOWNLOADS
+      },
+      engineMaxConnectionPerServer () {
+        return ENGINE_MAX_CONNECTION_PER_SERVER
       },
       maxOverallDownloadLimitParsed: {
         get () {

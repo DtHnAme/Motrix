@@ -109,9 +109,13 @@ export default class Engine {
     }
     const keepSeeding = this.userConfig['keep-seeding']
     const seedRatio = this.systemConfig['seed-ratio']
+    const maxConnectionPerServer = this.systemConfig['max-connection-per-server']
     if (keepSeeding || seedRatio === 0) {
       extraConfig['seed-ratio'] = 0
       delete extraConfig['seed-time']
+    }
+    if (maxConnectionPerServer >= 16) {
+      extraConfig['max-connection-per-server'] = 16
     }
     console.log('extraConfig===>', extraConfig)
 
