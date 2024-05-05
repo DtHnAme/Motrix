@@ -10,7 +10,7 @@
     getTaskFullPath,
     showItemInFolder
   } from '@/utils/native'
-  import { checkTaskIsBT, getTaskName } from '@shared/utils'
+  import { checkTaskIsBT, getTaskName, getFileNameFromUrl } from '@shared/utils'
 
   export default {
     name: 'mo-engine-client',
@@ -33,6 +33,8 @@
         currentTaskItem: state => state.currentTaskItem
       }),
       ...mapState('preference', {
+        taskStartNotification: state => state.config.taskStartNotification,
+        taskNotificationSilent: state => state.config.taskNotificationSilent,
         taskNotification: state => state.config.taskNotification
       }),
       currentTaskIsBT () {
@@ -77,9 +79,10 @@
           .then((task) => {
             const { dir } = task
             this.$store.dispatch('preference/recordHistoryDirectory', dir)
-            const taskName = getTaskName(task)
+            const taskName = getFileNameFromUrl(task)
             const message = this.$t('task.download-start-message', { taskName })
             this.$msg.info(message)
+            this.showTaskStartNotify(task)
           })
       },
       onDownloadPause (event) {
@@ -155,6 +158,19 @@
         this.showTaskCompleteNotify(task, isBT, path)
         this.$electron.ipcRenderer.send('event', 'task-download-complete', task, path)
       },
+      showTaskStartNotify (task) {
+        if (!this.taskStartNotification) {
+          return
+        }
+
+        const taskName = getFileNameFromUrl(task)
+
+        /* eslint-disable no-new */
+        new Notification(this.$t('task.download-start-message', { taskName: ' ' }), {
+          body: taskName,
+          silent: this.taskNotificationSilent
+        })
+      },
       showTaskCompleteNotify (task, isBT, path) {
         const taskName = getTaskName(task)
         const message = isBT
@@ -176,7 +192,8 @@
 
         /* eslint-disable no-new */
         const notify = new Notification(notifyMessage, {
-          body: `${taskName}${tips}`
+          body: `${taskName}${tips}`,
+          silent: this.taskNotificationSilent
         })
         notify.onclick = () => {
           showItemInFolder(path, {
@@ -196,7 +213,8 @@
 
         /* eslint-disable no-new */
         new Notification(this.$t('task.download-fail-notify'), {
-          body: taskName
+          body: taskName,
+          silent: this.taskNotificationSilent
         })
       },
       bindEngineEvents () {

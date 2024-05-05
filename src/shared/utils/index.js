@@ -252,6 +252,45 @@ export const getTaskName = (task, options = {}) => {
   return result
 }
 
+export const getFileNameFromUrl = (task) => {
+  const file = task.files[0]
+  if (!file) {
+    return ''
+  }
+
+  let path = file.path
+  let needUrlDecode = false
+
+  if (!path && file.uris && file.uris.length > 0) {
+    path = file.uris[0].uri
+    needUrlDecode = true
+  }
+
+  const index = path.lastIndexOf('/')
+
+  if (index <= 0 || index === path.length) {
+    return path
+  }
+
+  const fileNameAndQueryString = path.substring(index + 1)
+  const queryStringStartPos = fileNameAndQueryString.indexOf('?')
+  let fileName = fileNameAndQueryString
+
+  if (queryStringStartPos > 0) {
+    fileName = fileNameAndQueryString.substring(0, queryStringStartPos)
+  }
+
+  if (needUrlDecode) {
+    try {
+      fileName = decodeURI(fileName)
+    } catch (ex) {
+
+    }
+  }
+
+  return fileName
+}
+
 export const getFileNameFromFile = (file) => {
   if (!file) {
     return ''

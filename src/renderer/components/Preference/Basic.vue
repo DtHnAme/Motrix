@@ -265,8 +265,18 @@
             </el-checkbox>
           </el-col>
           <el-col class="form-item-sub" :span="24">
+            <el-checkbox v-model="form.taskStartNotification">
+              {{ $t('preferences.task-start-notify') }}
+            </el-checkbox>
+          </el-col>
+          <el-col class="form-item-sub" :span="24">
             <el-checkbox v-model="form.taskNotification">
               {{ $t('preferences.task-completed-notify') }}
+            </el-checkbox>
+          </el-col>
+          <el-col class="form-item-sub" :span="24">
+            <el-checkbox v-model="form.taskNotificationSilent">
+              {{ $t('preferences.task-silent-notify') }}
             </el-checkbox>
           </el-col>
           <el-col class="form-item-sub" :span="24">
@@ -347,7 +357,9 @@
       seedRatio,
       seedTime,
       showProgressBar,
+      taskStartNotification,
       taskNotification,
+      taskNotificationSilent,
       theme,
       traySpeedometer
     } = config
@@ -383,7 +395,9 @@
       seedRatio,
       seedTime,
       showProgressBar,
+      taskStartNotification,
       taskNotification,
+      taskNotificationSilent,
       theme,
       traySpeedometer
     }

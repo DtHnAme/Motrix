@@ -23,7 +23,9 @@ const userKeys = [
   'resume-all-when-app-launched',
   'run-mode',
   'show-progress-bar',
+  'task-start-notification',
   'task-notification',
+  'task-notification-silent',
   'theme',
   'tracker-source',
   'tray-speedometer'

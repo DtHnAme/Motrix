@@ -127,8 +127,10 @@ export default class ConfigManager {
         'resume-all-when-app-launched': false,
         'run-mode': APP_RUN_MODE.STANDARD,
         'show-progress-bar': true,
+        'task-start-notification': true,
         'task-notification': true,
         'theme': APP_THEME.AUTO,
+        'task-notification-silent': false,
         'tracker-source': [
           NGOSANG_TRACKERS_BEST_IP_URL_CDN,
           NGOSANG_TRACKERS_BEST_URL_CDN
