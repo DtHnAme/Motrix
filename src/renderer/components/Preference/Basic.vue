@@ -548,6 +548,8 @@
       },
       handleThemeChange (theme) {
         this.form.theme = theme
+        this.$store.dispatch('preference/save', { theme: theme })
+        this.syncFormConfig()
       },
       handleDownloadChange (value) {
         const speedLimit = parseInt(this.form.maxOverallDownloadLimit, 10)
