@@ -166,10 +166,13 @@
         const taskName = getFileNameFromUrl(task)
 
         /* eslint-disable no-new */
-        new Notification(this.$t('task.download-start-message', { taskName: ' ' }), {
+        const notify = new Notification(this.$t('task.download-start-message', { taskName: ' ' }), {
           body: taskName,
           silent: this.taskNotificationSilent
         })
+        notify.onclick = () => {
+          this.$electron.ipcRenderer.send('command', 'application:show', 'index')
+        }
       },
       showTaskCompleteNotify (task, isBT, path) {
         const taskName = getTaskName(task)
@@ -212,10 +215,13 @@
         }
 
         /* eslint-disable no-new */
-        new Notification(this.$t('task.download-fail-notify'), {
+        const notify = new Notification(this.$t('task.download-fail-notify'), {
           body: taskName,
           silent: this.taskNotificationSilent
         })
+        notify.onclick = () => {
+          this.$electron.ipcRenderer.send('command', 'application:show', 'index')
+        }
       },
       bindEngineEvents () {
         api.client.on('onDownloadStart', this.onDownloadStart)
