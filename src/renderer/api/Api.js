@@ -230,7 +230,7 @@ export default class Api {
       this.loadDownloadRecord().then((record) => {
         const gids = data.map((task) => task.gid)
         const tasks = record.filter((task) => !gids.includes(task.gid))
-        const result = data.reverse().concat(tasks)
+        const result = data.concat(tasks)
 
         // Save storage space
         result.forEach((task) => {
@@ -322,7 +322,7 @@ export default class Api {
   fetchTaskList (params = {}) {
     const { type } = params
     return new Promise((resolve) => {
-      this.fetchTaskListWithoutRecord(params).then((data) => {
+      this.fetchAllTaskList(params).then((data) => {
         const result = this.recordTaskList(type, data)
         // console.log('[Motrix] fetch task list data:', result)
         resolve(result)

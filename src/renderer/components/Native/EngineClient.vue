@@ -79,7 +79,6 @@
           .then((task) => {
             const { dir } = task
             this.$store.dispatch('preference/recordHistoryDirectory', dir)
-            this.$store.dispatch('task/fetchDownloadRecord')
             const taskName = getFileNameFromUrl(task)
             const message = this.$t('task.download-start-message', { taskName })
             this.$msg.info(message)
@@ -87,6 +86,7 @@
           })
       },
       onDownloadPause (event) {
+        this.$store.dispatch('task/fetchList')
         const [{ gid }] = event
         const { seedingList } = this
         if (seedingList.includes(gid)) {
@@ -101,20 +101,20 @@
           })
       },
       onDownloadStop (event) {
+        this.$store.dispatch('task/fetchList')
         const [{ gid }] = event
         this.fetchTaskItem({ gid })
           .then((task) => {
-            this.$store.dispatch('task/fetchDownloadRecord')
             const taskName = getTaskName(task)
             const message = this.$t('task.download-stop-message', { taskName })
             this.$msg.info(message)
           })
       },
       onDownloadError (event) {
+        this.$store.dispatch('task/fetchList')
         const [{ gid }] = event
         this.fetchTaskItem({ gid })
           .then((task) => {
-            this.$store.dispatch('task/fetchDownloadRecord')
             const taskName = getTaskName(task)
             const { errorCode, errorMessage } = task
             console.error(`[Motrix] download error gid: ${gid}, #${errorCode}, ${errorMessage}`)
@@ -156,7 +156,6 @@
       },
       handleDownloadComplete (task, isBT) {
         this.$store.dispatch('task/saveSession')
-        this.$store.dispatch('task/fetchDownloadRecord')
 
         const path = getTaskFullPath(task)
         this.showTaskCompleteNotify(task, isBT, path)
