@@ -34,7 +34,7 @@
         <span class="task-detail-tab-label" slot="label"><i class="el-icon-s-custom"></i></span>
         <mo-task-peers :peers="peers" />
       </el-tab-pane>
-      <el-tab-pane name="files" lazy>
+      <el-tab-pane name="files" lazy v-if="isBT">
         <span class="task-detail-tab-label" slot="label"><i class="el-icon-files"></i></span>
         <mo-task-files
           ref="detailFileList"
