@@ -30,6 +30,10 @@ export const getConfigBasePath = () => {
   return path
 }
 
+export const getDownloadRecordPath = () => {
+  return resolve(getUserDataPath(), './download.record')
+}
+
 export const getSessionPath = () => {
   return resolve(getUserDataPath(), './download.session')
 }

@@ -774,6 +774,13 @@ export default class Application extends EventEmitter {
   handleCommands () {
     this.on('application:save-preference', this.savePreference)
 
+    this.on('application:save-download-record', (record) => {
+      if (isEmpty(record)) {
+        return
+      }
+      this.configManager.setDownloadRecord(record)
+    })
+
     this.on('application:update-tray', (tray) => {
       this.trayManager.updateTrayByImage(tray)
     })
@@ -1020,6 +1027,10 @@ export default class Application extends EventEmitter {
         ...context
       }
       return result
+    })
+
+    ipcMain.handle('get-download-record', async () => {
+      return this.configManager.getDownloadRecord()
     })
   }
 }

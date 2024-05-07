@@ -5,6 +5,7 @@ import Store from 'electron-store'
 import {
   getConfigBasePath,
   getDhtPath,
+  getDownloadRecordPath,
   getMaxConnectionPerServer,
   getUserDownloadsPath
 } from '../utils/index'
@@ -23,6 +24,8 @@ import {
 import { CHROME_UA } from '@shared/ua'
 import { separateConfig } from '@shared/utils'
 import { reduceTrackerString } from '@shared/utils/tracker'
+
+const fs = require('node:fs')
 
 export default class ConfigManager {
   constructor () {
@@ -210,6 +213,18 @@ export default class ConfigManager {
 
   setUserConfig (...args) {
     this.userConfig.set(...args)
+  }
+
+  getDownloadRecord () {
+    if (fs.existsSync(getDownloadRecordPath())) {
+      return JSON.parse(fs.readFileSync(getDownloadRecordPath()))
+    } else {
+      this.setDownloadRecord(JSON.stringify([]))
+    }
+  }
+
+  setDownloadRecord (record) {
+    fs.writeFileSync(getDownloadRecordPath(), record)
   }
 
   reset () {

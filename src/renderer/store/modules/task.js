@@ -80,12 +80,18 @@ const actions = {
       .then((data) => {
         dispatch('updateCurrentTaskItem', data)
       })
+      .catch((err) => {
+        console.log('fetchItem Error:', err)
+      })
   },
   fetchItemWithPeers ({ dispatch }, gid) {
     return api.fetchTaskItemWithPeers({ gid })
       .then((data) => {
         console.log('fetchItemWithPeers===>', data)
         dispatch('updateCurrentTaskItem', data)
+      })
+      .catch((err) => {
+        console.log('fetchItemWithPeers Error:', err)
       })
   },
   showTaskDetailByGid ({ commit, dispatch }, gid) {
@@ -119,6 +125,9 @@ const actions = {
   },
   updateCurrentTaskGid ({ commit }, gid) {
     commit('UPDATE_CURRENT_TASK_GID', gid)
+  },
+  fetchDownloadRecord () {
+    return api.fetchDownloadRecord()
   },
   addUri ({ dispatch }, data) {
     const { uris, outs, options } = data

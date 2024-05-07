@@ -8,9 +8,10 @@ import {
   formatOptionsForEngine,
   mergeTaskResult,
   changeKeysToCamelCase,
-  changeKeysToKebabCase
+  changeKeysToKebabCase,
+  checkTaskIsBT
 } from '@shared/utils'
-import { ENGINE_RPC_HOST } from '@shared/constants'
+import { ENGINE_RPC_HOST, TASK_STATUS } from '@shared/constants'
 
 export default class Api {
   constructor (options = {}) {
@@ -43,6 +44,11 @@ export default class Api {
       : this.loadConfigFromLocalStorage()
 
     result = changeKeysToCamelCase(result)
+    return result
+  }
+
+  async loadDownloadRecord () {
+    const result = await ipcRenderer.invoke('get-download-record')
     return result
   }
 
@@ -109,6 +115,21 @@ export default class Api {
     }
 
     ipcRenderer.send('command', 'application:save-preference', config)
+  }
+
+  saveDownloadRecord (record = []) {
+    ipcRenderer.send('command', 'application:save-download-record', JSON.stringify(record))
+  }
+
+  fetchDownloadRecord () {
+    return new Promise((resolve, reject) => {
+      this.fetchAllTaskList().then((data) => {
+        const result = this.recordTaskList('', data)
+        resolve(result)
+      }).catch((err) => {
+        reject(err)
+      })
+    })
   }
 
   getVersion () {
@@ -204,6 +225,63 @@ export default class Api {
     return this.client.call('addMetalink', ...args)
   }
 
+  recordTaskList (type = 'active', data) {
+    return new Promise((resolve) => {
+      this.loadDownloadRecord().then((record) => {
+        const gids = data.map((task) => task.gid)
+        const tasks = record.filter((task) => !gids.includes(task.gid))
+        const result = data.reverse().concat(tasks)
+
+        // Save storage space
+        result.forEach((task) => {
+          if (!checkTaskIsBT(task)) {
+            task.files.forEach((file) => {
+              file.uris = file.uris.slice(0, 1)
+            })
+          }
+        })
+
+        // console.log('[Motrix] record task list result:', result)
+        this.saveDownloadRecord(result)
+
+        switch (type) {
+        case 'active':
+          resolve(result.filter((task) => task.status === TASK_STATUS.ACTIVE))
+          break
+        case 'waiting':
+          resolve(result.filter((task) => task.status === TASK_STATUS.WAITING))
+          break
+        case 'stopped':
+          resolve(result.filter((task) => task.status !== TASK_STATUS.WAITING && task.status !== TASK_STATUS.ACTIVE))
+          break
+        default:
+          resolve(result)
+          break
+        }
+      })
+    })
+  }
+
+  fetchAllTaskList (params = {}) {
+    const { offset = 0, num = 20, keys } = params
+    const activeArgs = compactUndefined([keys])
+    const waitingArgs = compactUndefined([offset, num, keys])
+    return new Promise((resolve, reject) => {
+      this.client.multicall([
+        ['aria2.tellActive', ...activeArgs],
+        ['aria2.tellWaiting', ...waitingArgs],
+        ['aria2.tellStopped', ...waitingArgs]
+      ]).then((data) => {
+        console.log('[Motrix] fetch all task list data:', data)
+        const result = mergeTaskResult(data)
+        resolve(result)
+      }).catch((err) => {
+        console.log('[Motrix] fetch all task list fail:', err)
+        reject(err)
+      })
+    })
+  }
+
   fetchDownloadingTaskList (params = {}) {
     const { offset = 0, num = 20, keys } = params
     const activeArgs = compactUndefined([keys])
@@ -243,7 +321,20 @@ export default class Api {
 
   fetchTaskList (params = {}) {
     const { type } = params
+    return new Promise((resolve) => {
+      this.fetchTaskListWithoutRecord(params).then((data) => {
+        const result = this.recordTaskList(type, data)
+        // console.log('[Motrix] fetch task list data:', result)
+        resolve(result)
+      })
+    })
+  }
+
+  fetchTaskListWithoutRecord (params = {}) {
+    const { type } = params
     switch (type) {
+    case 'all':
+      return this.fetchAllTaskList(params)
     case 'active':
       return this.fetchDownloadingTaskList(params)
     case 'waiting':
@@ -324,7 +415,21 @@ export default class Api {
   removeTask (params = {}) {
     const { gid } = params
     const args = compactUndefined([gid])
-    return this.client.call('remove', ...args)
+    return new Promise((resolve, reject) => {
+      this.loadDownloadRecord().then((data) => {
+        const record = data.filter((task) => task.gid !== gid)
+        this.saveDownloadRecord(record)
+        resolve(0)
+      }).catch((err) => {
+        reject(err)
+      })
+
+      this.client.call('remove', ...args).then((data) => {
+        resolve(data)
+      }).catch((err) => {
+        reject(err)
+      })
+    })
   }
 
   forceRemoveTask (params = {}) {
@@ -338,13 +443,28 @@ export default class Api {
   }
 
   purgeTaskRecord (params = {}) {
+    this.saveDownloadRecord()
     return this.client.call('purgeDownloadResult')
   }
 
   removeTaskRecord (params = {}) {
     const { gid } = params
     const args = compactUndefined([gid])
-    return this.client.call('removeDownloadResult', ...args)
+    return new Promise((resolve, reject) => {
+      this.loadDownloadRecord().then((data) => {
+        const record = data.filter((task) => task.gid !== gid)
+        this.saveDownloadRecord(record)
+        resolve(0)
+      }).catch((err) => {
+        reject(err)
+      })
+
+      this.client.call('removeDownloadResult', ...args).then((data) => {
+        resolve(data)
+      }).catch((err) => {
+        reject(err)
+      })
+    })
   }
 
   multicall (method, params = {}) {
