@@ -110,7 +110,7 @@ export default class WindowManager extends EventEmitter {
     }
 
     if (is.dev() && pageOptions.openDevTools) {
-      window.webContents.openDevTools()
+      window.webContents.openDevTools({ mode: 'undocked' })
     }
 
     window.webContents.setWindowOpenHandler(({ url }) => {
