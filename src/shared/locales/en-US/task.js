@@ -1,4 +1,5 @@
 export default {
+  'all': 'All Tasks',
   'active': 'Downloading',
   'waiting': 'Waiting',
   'stopped': 'Stopped',
