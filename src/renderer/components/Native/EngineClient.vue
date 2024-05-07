@@ -69,6 +69,7 @@
         this.$store.dispatch('task/fetchList')
         this.$store.dispatch('app/resetInterval')
         this.$store.dispatch('task/saveSession')
+        this.startPolling()
         const [{ gid }] = event
         const { seedingList } = this
         if (seedingList.includes(gid)) {
@@ -86,6 +87,7 @@
           })
       },
       onDownloadPause (event) {
+        this.stopPolling()
         this.$store.dispatch('task/fetchList')
         const [{ gid }] = event
         const { seedingList } = this
@@ -101,6 +103,7 @@
           })
       },
       onDownloadStop (event) {
+        this.stopPolling()
         this.$store.dispatch('task/fetchList')
         const [{ gid }] = event
         this.fetchTaskItem({ gid })
@@ -111,6 +114,7 @@
           })
       },
       onDownloadError (event) {
+        this.stopPolling()
         this.$store.dispatch('task/fetchList')
         const [{ gid }] = event
         this.fetchTaskItem({ gid })
@@ -130,6 +134,7 @@
           })
       },
       onDownloadComplete (event) {
+        this.stopPolling()
         this.$store.dispatch('task/fetchList')
         const [{ gid }] = event
         this.$store.dispatch('task/removeFromSeedingList', gid)
@@ -140,6 +145,7 @@
           })
       },
       onBtDownloadComplete (event) {
+        this.stopPolling()
         this.$store.dispatch('task/fetchList')
         const [{ gid }] = event
         const { seedingList } = this
@@ -273,16 +279,12 @@
       setTimeout(() => {
         this.$store.dispatch('app/fetchEngineInfo')
         this.$store.dispatch('app/fetchEngineOptions')
-
-        this.startPolling()
       }, 100)
     },
     destroyed () {
       this.$store.dispatch('task/saveSession')
 
       this.unbindEngineEvents()
-
-      this.stopPolling()
     }
   }
 </script>
