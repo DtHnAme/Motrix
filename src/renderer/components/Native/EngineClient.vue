@@ -88,7 +88,6 @@
       },
       onDownloadPause (event) {
         this.stopPolling()
-        this.$store.dispatch('task/fetchList')
         const [{ gid }] = event
         const { seedingList } = this
         if (seedingList.includes(gid)) {
@@ -104,7 +103,6 @@
       },
       onDownloadStop (event) {
         this.stopPolling()
-        this.$store.dispatch('task/fetchList')
         const [{ gid }] = event
         this.fetchTaskItem({ gid })
           .then((task) => {
@@ -115,7 +113,6 @@
       },
       onDownloadError (event) {
         this.stopPolling()
-        this.$store.dispatch('task/fetchList')
         const [{ gid }] = event
         this.fetchTaskItem({ gid })
           .then((task) => {
@@ -135,7 +132,6 @@
       },
       onDownloadComplete (event) {
         this.stopPolling()
-        this.$store.dispatch('task/fetchList')
         const [{ gid }] = event
         this.$store.dispatch('task/removeFromSeedingList', gid)
 
@@ -146,7 +142,6 @@
       },
       onBtDownloadComplete (event) {
         this.stopPolling()
-        this.$store.dispatch('task/fetchList')
         const [{ gid }] = event
         const { seedingList } = this
         if (seedingList.includes(gid)) {
@@ -270,6 +265,7 @@
       stopPolling () {
         clearTimeout(this.timer)
         this.timer = null
+        this.polling()
       }
     },
     created () {
