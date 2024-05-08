@@ -1,4 +1,4 @@
-import { access, constants } from 'node:fs'
+import { access, constants, unlink } from 'node:fs'
 import { resolve } from 'node:path'
 import { shell, nativeTheme } from '@electron/remote'
 import { Message } from 'element-ui'
@@ -67,7 +67,7 @@ export const getTaskFullPath = (task) => {
   return result
 }
 
-export const moveTaskFilesToTrash = (task) => {
+export const moveTaskFilesToTrash = (task, force = false) => {
   /**
    * For magnet link tasks, there is bittorrent, but there is no bittorrent.info.
    * The path is not a complete path before it becomes a BT task.
@@ -88,7 +88,11 @@ export const moveTaskFilesToTrash = (task) => {
   access(path, constants.F_OK, async (err) => {
     console.log(`[Motrix] ${path} ${err ? 'does not exist' : 'exists'}`)
     if (!err) {
-      deleteResult1 = await shell.trashItem(path)
+      if (force) {
+        unlink(path, (error) => { deleteResult1 = !error })
+      } else {
+        deleteResult1 = await shell.trashItem(path)
+      }
     }
   })
 
@@ -102,7 +106,11 @@ export const moveTaskFilesToTrash = (task) => {
   access(extraFilePath, constants.F_OK, async (err) => {
     console.log(`[Motrix] ${extraFilePath} ${err ? 'does not exist' : 'exists'}`)
     if (!err) {
-      deleteResult2 = await shell.trashItem(extraFilePath)
+      if (force) {
+        unlink(extraFilePath, (error) => { deleteResult2 = !error })
+      } else {
+        deleteResult2 = await shell.trashItem(extraFilePath)
+      }
     }
   })
 
@@ -113,11 +121,11 @@ export const getSystemTheme = () => {
   return nativeTheme.shouldUseDarkColors ? APP_THEME.DARK : APP_THEME.LIGHT
 }
 
-export const delayDeleteTaskFiles = (task, delay) => {
+export const delayDeleteTaskFiles = (task, force, delay) => {
   return new Promise((resolve, reject) => {
     setTimeout(() => {
       try {
-        const result = moveTaskFilesToTrash(task)
+        const result = moveTaskFilesToTrash(task, force)
         resolve(result)
       } catch (err) {
         reject(err.message)

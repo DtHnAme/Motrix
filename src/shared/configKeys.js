@@ -16,6 +16,7 @@ const userKeys = [
   'locale',
   'log-level',
   'new-task-show-downloading',
+  'force-delete-task-file',
   'no-confirm-before-delete-task',
   'open-at-login',
   'protocols',

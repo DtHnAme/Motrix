@@ -29,6 +29,7 @@ export default {
   'max-connection-per-server': '每个服务器最大连接数',
   'new-task-show-downloading': '新建任务后自动跳转到下载页面',
   'no-confirm-before-delete-task': '删除任务前无需确认',
+  'force-delete-task-file': '强制删除任务文件',
   'continue': '断点续传',
   'task-start-notify': '下载开始时通知',
   'task-completed-notify': '下载完成后通知',

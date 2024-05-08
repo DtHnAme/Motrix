@@ -73,6 +73,7 @@
         selectedGidListCount: state => state.selectedGidList.length
       }),
       ...mapState('preference', {
+        forceDeleteTaskFile: state => state.config.forceDeleteTaskFile,
         noConfirmBeforeDelete: state => state.config.noConfirmBeforeDeleteTask
       }),
       subnavs () {
@@ -146,7 +147,8 @@
       },
       deleteTaskFiles (task) {
         try {
-          const result = moveTaskFilesToTrash(task)
+          const { forceDeleteTaskFile } = this
+          const result = moveTaskFilesToTrash(task, forceDeleteTaskFile)
 
           if (!result) {
             throw new Error('task.remove-task-file-fail')
@@ -215,7 +217,8 @@
           })
       },
       batchDeleteTaskFiles (taskList) {
-        const promises = taskList.map((task, index) => delayDeleteTaskFiles(task, index * 200))
+        const { forceDeleteTaskFile } = this
+        const promises = taskList.map((task, index) => delayDeleteTaskFiles(task, forceDeleteTaskFile, index * 200))
         Promise.allSettled(promises).then(results => {
           console.log('[Motrix] batch delete task files: ', results)
         })

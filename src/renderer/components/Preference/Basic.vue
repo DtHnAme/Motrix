@@ -280,6 +280,11 @@
             </el-checkbox>
           </el-col>
           <el-col class="form-item-sub" :span="24">
+            <el-checkbox v-model="form.forceDeleteTaskFile">
+              {{ $t('preferences.force-delete-task-file') }}
+            </el-checkbox>
+          </el-col>
+          <el-col class="form-item-sub" :span="24">
             <el-checkbox v-model="form.noConfirmBeforeDeleteTask">
               {{ $t('preferences.no-confirm-before-delete-task') }}
             </el-checkbox>
@@ -349,6 +354,7 @@
       maxOverallDownloadLimit,
       maxOverallUploadLimit,
       newTaskShowDownloading,
+      forceDeleteTaskFile,
       noConfirmBeforeDeleteTask,
       openAtLogin,
       pauseMetadata,
@@ -387,6 +393,7 @@
       maxOverallDownloadLimit,
       maxOverallUploadLimit,
       newTaskShowDownloading,
+      forceDeleteTaskFile,
       noConfirmBeforeDeleteTask,
       openAtLogin,
       pauseMetadata,

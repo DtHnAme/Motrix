@@ -29,6 +29,7 @@ export default {
   'max-connection-per-server': 'Maximum connections per server',
   'new-task-show-downloading': 'Automatically show downloading after adding task',
   'no-confirm-before-delete-task': 'No confirmation is required before deleting task',
+  'force-delete-task-file': 'Force delete task file',
   'continue': 'Continue',
   'task-start-notify': 'Notify when download starts',
   'task-completed-notify': 'Notify after download is complete',
