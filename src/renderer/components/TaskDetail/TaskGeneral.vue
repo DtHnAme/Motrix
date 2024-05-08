@@ -16,6 +16,11 @@
         {{ taskFullName }}
       </div>
     </el-form-item>
+    <el-form-item :label="`${$t('task.task-file-size')}: `" v-if="task.totalLength > 0">
+      <div class="form-static-value">
+        {{ task.totalLength | bytesToSize }}
+      </div>
+    </el-form-item>
     <el-form-item :label="`${$t('task.task-dir')}: `">
       <el-input placeholder="" readonly v-model="path">
         <mo-show-in-folder
