@@ -22,7 +22,7 @@
         <span class="task-detail-tab-label" slot="label"><i class="el-icon-info"></i></span>
         <mo-task-general :task="task" />
       </el-tab-pane>
-      <el-tab-pane name="activity" lazy>
+      <el-tab-pane name="activity" lazy v-if="!isComplete">
         <span class="task-detail-tab-label" slot="label"><i class="el-icon-s-grid"></i></span>
         <mo-task-activity ref="taskGraphic" :task="task" />
       </el-tab-pane>
@@ -140,6 +140,9 @@
       isRenderer: () => is.renderer(),
       isBT () {
         return checkTaskIsBT(this.task)
+      },
+      isComplete () {
+        return this.task.status === TASK_STATUS.COMPLETE
       },
       isSeeder () {
         return checkTaskIsSeeder(this.task)
