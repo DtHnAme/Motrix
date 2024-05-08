@@ -4,7 +4,7 @@
     direction="horizontal"
   >
     <el-aside
-      width="200px"
+      width=""
       class="subnav hidden-xs-only"
     >
       <mo-task-subnav :current="status" />

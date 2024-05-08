@@ -163,6 +163,7 @@ iframe {
 .subnav {
   background-color: $--subnav-background;
   color: $--subnav-text-color;
+  overflow: hidden;
 }
 
 .main {
@@ -173,6 +174,24 @@ iframe {
   margin-top: 44px;
   padding: 0 16px;
   user-select: none;
+  width: 36px;
+  transition: $--all-transition;
+  &:hover {
+    width: 168px;
+
+    ul {
+      transform: translateY(0);
+    }
+
+    ul li span,
+    h3 {
+      opacity: 1;
+    }
+    
+    .subnav-icon{
+      padding: 2px;
+    }
+  }
 
   h3 {
     font-size: 16px;
@@ -180,6 +199,9 @@ iframe {
     font-weight: normal;
     line-height: 24px;
     margin: 0 0 28px;
+    opacity: 0;
+    text-wrap: nowrap;
+    transition: $--all-transition;
   }
 
   ul {
@@ -187,6 +209,8 @@ iframe {
     padding: 0;
     margin: 0;
     cursor: default;
+    transition: $--all-transition;
+    transform: translateY(-50px);
 
     li {
       margin-bottom: 8px;
@@ -195,12 +219,18 @@ iframe {
       line-height: 20px;
       border-radius: 3px;
       cursor: pointer;
+      text-wrap: nowrap;
 
       i,
       span {
         display: inline-block;
         vertical-align: middle;
         font-size: 14px;
+      }
+
+      span {
+        opacity: 0;
+        transition: $--all-transition;
       }
 
       &:hover,
@@ -218,9 +248,10 @@ iframe {
 }
 
 .subnav-icon {
-  padding: 2px;
+  padding: 0;
   height: 16px;
   margin-right: 12px;
+  transition: $--all-transition;
 
   svg {
     width: 16px;
