@@ -480,7 +480,22 @@ export default class Api {
   }
 
   batchRemoveTask (params = {}) {
-    return this.multicall('aria2.remove', params)
+    const { gids } = params
+    return new Promise((resolve, reject) => {
+      this.loadDownloadRecord().then((data) => {
+        const record = data.filter((task) => !gids.includes(task.gid))
+        this.saveDownloadRecord(record)
+        resolve(0)
+      }).catch((err) => {
+        reject(err)
+      })
+
+      this.multicall('aria2.remove', params).then((data) => {
+        resolve(data)
+      }).catch((err) => {
+        console.log('[Motrix] batch remove task fail:', err)
+      })
+    })
   }
 
   batchResumeTask (params = {}) {
