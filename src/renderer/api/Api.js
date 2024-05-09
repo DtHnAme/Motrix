@@ -263,14 +263,18 @@ export default class Api {
   }
 
   fetchAllTaskList (params = {}) {
+    const { offset = 0, num = 20, keys } = params
+    const activeArgs = compactUndefined([keys])
+    const waitingArgs = compactUndefined([offset, num, keys])
     return new Promise((resolve, reject) => {
-      this.fetchDownloadingTaskList(params).then((data) => {
-        // TODO: use other method reverse stopped task list
-        this.fetchStoppedTaskList(params).then((stoppedData) => {
-          const result = data.concat(stoppedData.reverse())
-          console.log('[Motrix] fetch all task list data:', data)
-          resolve(result)
-        })
+      this.client.multicall([
+        ['aria2.tellActive', ...activeArgs],
+        ['aria2.tellWaiting', ...waitingArgs],
+        ['aria2.tellStopped', ...waitingArgs]
+      ]).then((data) => {
+        console.log('[Motrix] fetch all task list data:', data)
+        const result = mergeTaskResult(data)
+        resolve(result)
       }).catch((err) => {
         console.log('[Motrix] fetch all task list fail:', err)
         reject(err)
