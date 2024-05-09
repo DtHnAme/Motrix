@@ -229,7 +229,7 @@
       },
       bindEngineEvents () {
         api.client.on('onDownloadStart', this.onDownloadStart)
-        // api.client.on('onDownloadPause', this.onDownloadPause)
+        api.client.on('onDownloadPause', this.onDownloadPause)
         api.client.on('onDownloadStop', this.onDownloadStop)
         api.client.on('onDownloadComplete', this.onDownloadComplete)
         api.client.on('onDownloadError', this.onDownloadError)
@@ -237,7 +237,7 @@
       },
       unbindEngineEvents () {
         api.client.removeListener('onDownloadStart', this.onDownloadStart)
-        // api.client.removeListener('onDownloadPause', this.onDownloadPause)
+        api.client.removeListener('onDownloadPause', this.onDownloadPause)
         api.client.removeListener('onDownloadStop', this.onDownloadStop)
         api.client.removeListener('onDownloadComplete', this.onDownloadComplete)
         api.client.removeListener('onDownloadError', this.onDownloadError)

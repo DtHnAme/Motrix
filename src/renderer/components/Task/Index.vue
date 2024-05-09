@@ -236,7 +236,6 @@
       },
       handlePauseTask (payload) {
         const { task, taskName } = payload
-        this.$msg.info(this.$t('task.download-pause-message', { taskName }))
         this.$store.dispatch('task/pauseTask', task)
           .catch(({ code }) => {
             if (code === 1) {
