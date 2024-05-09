@@ -1,6 +1,6 @@
 import { ipcRenderer } from 'electron'
 import is from 'electron-is'
-import { isEmpty, clone } from 'lodash'
+import { isEmpty, merge, clone } from 'lodash'
 import { Aria2 } from '@shared/aria2'
 import {
   separateConfig,
@@ -229,7 +229,17 @@ export default class Api {
     return new Promise((resolve) => {
       this.loadDownloadRecord().then((record) => {
         const gids = data.map((task) => task.gid)
-        const tasks = record.filter((task) => !gids.includes(task.gid))
+        const tasks = record.flatMap((task) => {
+          if (gids.includes(task.gid)) {
+            const item = data.find((item) => item.gid === task.gid)
+            const index = data.indexOf(item)
+            if (index !== -1) {
+              data.splice(index, 1)
+            }
+            task = merge(task, item)
+          }
+          return task
+        })
         const result = data.concat(tasks)
 
         // Save storage space
