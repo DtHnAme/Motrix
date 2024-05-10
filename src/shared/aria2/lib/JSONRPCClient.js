@@ -47,26 +47,6 @@ export class JSONRPCClient extends EventEmitter {
     })
   }
 
-  async http (message) {
-    const response = await fetch(this.url('http'), {
-      method: 'POST',
-      body: JSON.stringify(message),
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json'
-      }
-    })
-
-    response
-      .json()
-      .then(this._onmessage)
-      .catch((err) => {
-        this.emit('error', err)
-      })
-
-    return response
-  }
-
   _buildMessage (method, params) {
     if (typeof method !== 'string') {
       throw new TypeError(method + ' is not a string')
@@ -110,7 +90,7 @@ export class JSONRPCClient extends EventEmitter {
     const { socket } = this
     return socket && socket.readyState === 1
       ? this.websocket(message)
-      : this.http(message)
+      : {}
   }
 
   _onresponse ({ id, error, result }) {
