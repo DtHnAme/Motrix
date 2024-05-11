@@ -579,6 +579,7 @@ export default class Application extends EventEmitter {
   stop () {
     try {
       const promises = [
+        this.engineClient.disconnect(),
         this.stopEngine(),
         this.shutdownUPnPManager(),
         this.energyManager.stopPowerSaveBlocker(),

@@ -44,6 +44,24 @@ export default class EngineClient {
       port,
       secret
     })
+
+    this.client.open().then(() => {
+      logger.info('[Motrix] main engine client open success')
+    }).catch(err => {
+      logger.error('[Motrix] main engine client open fail', err)
+    })
+  }
+
+  disconnect () {
+    logger.info('[Motrix] main engine client disconnect')
+
+    this.client.close().then(() => {
+      logger.info('[Motrix] main engine client closed success')
+    }).catch(err => {
+      logger.error('[Motrix] main engine client close fail', err)
+    })
+
+    this.client = null
   }
 
   async call (method, ...args) {
