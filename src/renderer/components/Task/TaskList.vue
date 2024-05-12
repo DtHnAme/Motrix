@@ -1,7 +1,8 @@
 <template>
+  <div v-if="engineStatus !== 'connected'"/>
   <mo-drag-select
     class="task-list"
-    v-if="taskList.length > 0"
+    v-else-if="taskList.length > 0"
     attribute="attr"
     @change="handleDragSelectChange"
   >
@@ -42,6 +43,9 @@
       }
     },
     computed: {
+      ...mapState('app', {
+        engineStatus: state => state.engineStatus
+      }),
       ...mapState('task', {
         taskList: state => state.taskList,
         selectedGidList: state => state.selectedGidList

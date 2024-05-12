@@ -30,5 +30,8 @@ export default {
   'gt1d': '> 1 day',
   'hour': 'h',
   'minute': 'm',
-  'second': 's'
+  'second': 's',
+  'engine-connected-message': 'Engine Connected',
+  'engine-connecting-message': 'Engine Connecting...',
+  'engine-disconnected-message': 'Engine Disconnected',
 }

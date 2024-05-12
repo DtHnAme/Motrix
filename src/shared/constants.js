@@ -29,6 +29,12 @@ export const TASK_STATUS = {
   SEEDING: 'seeding'
 }
 
+export const ENGINE_STATUS = {
+  CONNECTED: 'connected',
+  CONNECTING: 'connecting',
+  DISCONNECTED: 'disconnected'
+}
+
 export const LOG_LEVELS = [
   'error',
   'warn',

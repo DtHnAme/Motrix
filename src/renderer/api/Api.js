@@ -11,7 +11,7 @@ import {
   changeKeysToKebabCase,
   checkTaskIsBT
 } from '@shared/utils'
-import { ENGINE_RPC_HOST, TASK_STATUS } from '@shared/constants'
+import { ENGINE_RPC_HOST, ENGINE_STATUS, TASK_STATUS } from '@shared/constants'
 
 export default class Api {
   constructor (options = {}) {
@@ -24,7 +24,8 @@ export default class Api {
     this.config = await this.loadConfig()
 
     this.client = this.initClient()
-    this.client.open()
+    this.openClient()
+    this.startListener()
   }
 
   loadConfigFromLocalStorage () {
@@ -65,15 +66,52 @@ export default class Api {
     })
   }
 
+  openClient () {
+    this.client.open()
+      .catch(err => {
+        console.log('engine client open fail', err)
+      })
+  }
+
+  startListener () {
+    this.client.addListener('open', this.handleClientStatus.bind(this))
+    this.client.addListener('close', this.handleClientStatus.bind(this))
+    this.client.addListener('connecting', this.handleClientStatus.bind(this))
+  }
+
+  stopListener () {
+    this.client.removeListener('open', this.handleClientStatus)
+    this.client.removeListener('close', this.handleClientStatus)
+    this.client.removeListener('connecting', this.handleClientStatus)
+  }
+
+  handleClientStatus (event) {
+    let status = ''
+    switch (event.type) {
+    case 'open':
+      status = ENGINE_STATUS.CONNECTED
+      break
+    case 'close':
+      status = ENGINE_STATUS.DISCONNECTED
+      break
+    case 'connecting':
+      status = ENGINE_STATUS.CONNECTING
+      break
+    }
+
+    this.client.emit('onEngineStatusChanged', status)
+  }
+
   closeClient () {
     this.client.close()
       .then(() => {
-        this.client = null
+        this.stopListener()
       })
       .catch(err => {
         console.log('engine client close fail', err)
       })
   }
+
 
   fetchPreference () {
     return new Promise((resolve) => {

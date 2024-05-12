@@ -11,6 +11,7 @@
     showItemInFolder
   } from '@/utils/native'
   import { checkTaskIsBT, getTaskName, getFileNameFromUrl } from '@shared/utils'
+import { ENGINE_STATUS } from '@shared/constants'
 
   export default {
     name: 'mo-engine-client',
@@ -155,6 +156,42 @@
             this.handleDownloadComplete(task, true)
           })
       },
+      onEngineStatusChanged (status) {
+        const lastStatus = this.$store.state.app.engineStatus
+        if (lastStatus === status) {
+          return
+        }
+
+        const connected = status === ENGINE_STATUS.CONNECTED
+
+        const statusTypeMap = {
+          [ENGINE_STATUS.CONNECTED]: 'success',
+          [ENGINE_STATUS.CONNECTING]: 'info',
+          [ENGINE_STATUS.DISCONNECTED]: 'error'
+        }
+
+        const statusStringMap = {
+          [ENGINE_STATUS.CONNECTED]: this.$t('app.engine-connected-message'),
+          [ENGINE_STATUS.CONNECTING]: this.$t('app.engine-connecting-message'),
+          [ENGINE_STATUS.DISCONNECTED]: this.$t('app.engine-disconnected-message')
+        }
+
+        if (this.lastStatusMsg) {
+          this.lastStatusMsg.close()
+        }
+
+        this.lastStatusMsg = this.$msg({
+          type: statusTypeMap[status],
+          message: statusStringMap[status],
+          showClose: false,
+          duration: connected ? 2000 : 0
+        })
+
+        console.log(`[Motrix] engine status changed status: ${status} lastStatus: ${lastStatus}`)
+
+        this.polling()
+        this.$store.dispatch('app/updateEngineStatus', status)
+      },
       handleDownloadComplete (task, isBT) {
         this.$store.dispatch('task/saveSession')
 
@@ -234,6 +271,7 @@
         api.client.on('onDownloadComplete', this.onDownloadComplete)
         api.client.on('onDownloadError', this.onDownloadError)
         api.client.on('onBtDownloadComplete', this.onBtDownloadComplete)
+        api.client.on('onEngineStatusChanged', this.onEngineStatusChanged)
       },
       unbindEngineEvents () {
         api.client.removeListener('onDownloadStart', this.onDownloadStart)

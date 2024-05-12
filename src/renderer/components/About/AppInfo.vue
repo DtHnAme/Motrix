@@ -6,7 +6,10 @@
     </div>
     <div class="app-icon"></div>
     <div class="engine-info" v-if="!!engine">
-      <h4>{{ $t('about.engine-version') }} {{engine.version}}</h4>
+      <h4>
+        <span>{{ $t('about.engine-version') }} {{engine.version}}</span>
+        <el-tag :type="type">{{status && status.toUpperCase()}}</el-tag>
+      </h4>
       <ul v-if="!isMas()">
         <li
           v-for="(feature, index) in engine.enabledFeatures"
@@ -21,6 +24,13 @@
 <script>
   import is from 'electron-is'
   import Logo from '@/components/Logo/Logo'
+  import { ENGINE_STATUS } from '@shared/constants'
+
+  const statusTypeMap = {
+    [ENGINE_STATUS.CONNECTED]: 'success',
+    [ENGINE_STATUS.CONNECTING]: 'primary',
+    [ENGINE_STATUS.DISCONNECTED]: 'danger'
+  }
 
   export default {
     name: 'mo-app-info',
@@ -32,6 +42,10 @@
         type: String,
         default: ''
       },
+      status: {
+        type: String,
+        default: ENGINE_STATUS.CONNECTING
+      },
       engine: {
         type: Object,
         default () {
@@ -40,6 +54,11 @@
             enabledFeatures: []
           }
         }
+      }
+    },
+    computed: {
+      type () {
+        return statusTypeMap[this.status]
       }
     },
     methods: {
@@ -75,6 +94,10 @@
       font-size: $--font-size-base;
       font-weight: normal;
       color: $--app-engine-title-color;
+
+      .el-tag {
+        margin-left: 8px;
+      }
     }
     ul {
       font-size: 12px;

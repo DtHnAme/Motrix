@@ -1,4 +1,4 @@
-import { ADD_TASK_TYPE } from '@shared/constants'
+import { ADD_TASK_TYPE, ENGINE_STATUS } from '@shared/constants'
 import api from '@/api'
 import { getSystemTheme } from '@/utils/native'
 
@@ -16,6 +16,7 @@ const state = {
     enabledFeatures: []
   },
   engineOptions: {},
+  engineStatus: '',
   interval: BASE_INTERVAL,
   stat: {
     downloadSpeed: 0,
@@ -50,6 +51,9 @@ const mutations = {
   },
   UPDATE_ENGINE_OPTIONS (state, engineOptions) {
     state.engineOptions = { ...state.engineOptions, ...engineOptions }
+  },
+  UPDATE_ENGINE_STATUS (state, engineStatus) {
+    state.engineStatus = engineStatus
   },
   UPDATE_GLOBAL_STAT (state, stat) {
     state.stat = stat
@@ -111,6 +115,9 @@ const actions = {
   },
   hideAboutPanel ({ commit }) {
     commit('UPDATE_ABOUT_PANEL_VISIBLE', false)
+  },
+  updateEngineStatus ({ commit }, engineStatus) {
+    commit('UPDATE_ENGINE_STATUS', engineStatus)
   },
   fetchEngineInfo ({ commit }) {
     api.getVersion()

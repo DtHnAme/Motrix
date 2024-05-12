@@ -1,6 +1,7 @@
 <template>
   <el-container
     class="main panel"
+    v-loading="loading"
     direction="horizontal"
   >
     <el-aside
@@ -37,7 +38,7 @@
   import { mapState } from 'vuex'
 
   import { commands } from '@/components/CommandManager/instance'
-  import { ADD_TASK_TYPE } from '@shared/constants'
+  import { ADD_TASK_TYPE, ENGINE_STATUS } from '@shared/constants'
   import TaskSubnav from '@/components/Subnav/TaskSubnav'
   import TaskActions from '@/components/Task/TaskActions'
   import TaskList from '@/components/Task/TaskList'
@@ -67,6 +68,9 @@
       }
     },
     computed: {
+      ...mapState('app', {
+        engineStatus: state => state.engineStatus
+      }),
       ...mapState('task', {
         taskList: state => state.taskList,
         selectedGidList: state => state.selectedGidList,
@@ -76,6 +80,9 @@
         forceDeleteTaskFile: state => state.config.forceDeleteTaskFile,
         noConfirmBeforeDelete: state => state.config.noConfirmBeforeDeleteTask
       }),
+      loading () {
+        return this.engineStatus !== ENGINE_STATUS.CONNECTED
+      },
       subnavs () {
         return [
           {

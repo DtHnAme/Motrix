@@ -6,7 +6,7 @@
     @open="handleOpen"
     :before-close="handleClose"
     @closed="handleClosed">
-    <mo-app-info :version="version" :engine="engineInfo" />
+    <mo-app-info :version="version" :engine="engineInfo" :status="engineStatus" />
     <mo-copyright slot="footer" />
   </el-dialog>
 </template>
@@ -37,7 +37,8 @@
     },
     computed: {
       ...mapState('app', {
-        engineInfo: state => state.engineInfo
+        engineInfo: state => state.engineInfo,
+        engineStatus: state => state.engineStatus
       })
     },
     methods: {

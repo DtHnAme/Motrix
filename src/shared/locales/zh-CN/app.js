@@ -30,5 +30,8 @@ export default {
   'gt1d': '超过一天',
   'hour': '时',
   'minute': '分',
-  'second': '秒'
+  'second': '秒',
+  'engine-connected-message': '引擎已连接',
+  'engine-connecting-message': '引擎正在连接...',
+  'engine-disconnected-message': '引擎已断开',
 }
