@@ -129,9 +129,25 @@ export class JSONRPCClient extends EventEmitter {
 
   async open () {
     const socket = (this.socket = new WebSocket(this.url('ws')))
+    const reconnect = () => {
+      setTimeout(() => {
+        const event = {
+          type: 'connecting',
+          target: socket
+        }
+        this.emit('connecting', event)
+        this.open().catch((err) => {
+          console.log('try reconnect socket error:', err)
+        })
+      }, 1000)
+    }
 
     socket.onclose = (...args) => {
-      this.emit('close', ...args)
+      if (args[0].code !== 1000) {
+        reconnect()
+      } else {
+        this.emit('close', ...args)
+      }
     }
     socket.onmessage = (event) => {
       let message
