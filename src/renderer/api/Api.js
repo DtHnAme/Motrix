@@ -112,7 +112,6 @@ export default class Api {
       })
   }
 
-
   fetchPreference () {
     return new Promise((resolve) => {
       this.config = this.loadConfig()

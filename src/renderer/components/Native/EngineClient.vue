@@ -11,7 +11,7 @@
     showItemInFolder
   } from '@/utils/native'
   import { checkTaskIsBT, getTaskName, getFileNameFromUrl } from '@shared/utils'
-import { ENGINE_STATUS } from '@shared/constants'
+  import { ENGINE_STATUS } from '@shared/constants'
 
   export default {
     name: 'mo-engine-client',
