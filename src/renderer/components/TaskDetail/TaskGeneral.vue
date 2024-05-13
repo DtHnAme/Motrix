@@ -21,6 +21,16 @@
         {{ task.totalLength | bytesToSize }}
       </div>
     </el-form-item>
+    <el-form-item :label="`${$t('task.task-start-time')}: `" v-if="task.startTime > 0">
+      <div class="form-static-value">
+        {{ new Date(task.startTime).toLocaleString() }}
+      </div>
+    </el-form-item>
+    <el-form-item :label="`${$t('task.task-complete-time')}: `" v-if="task.completeTime > 0">
+      <div class="form-static-value">
+        {{ new Date(task.completeTime).toLocaleString() }}
+      </div>
+    </el-form-item>
     <el-form-item :label="`${$t('task.task-dir')}: `">
       <el-input placeholder="" readonly v-model="path">
         <mo-show-in-folder

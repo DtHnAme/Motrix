@@ -485,6 +485,38 @@ export default class Api {
     return this.client.call('forceRemove', ...args)
   }
 
+  saveTimeStamp (params = {}) {
+    const { event, task, timestamp } = params
+    return new Promise((resolve, reject) => {
+      this.loadDownloadRecord().then((data) => {
+        data.map((tag) => {
+          if (tag.gid === task.gid) {
+            switch (event) {
+            case 'start':
+              if (!tag.startTime) {
+                tag.startTime = timestamp
+              }
+              break
+            case 'pause':
+              tag.pauseTime = timestamp
+              break
+            case 'complete':
+              if (!tag.completedTime) {
+                tag.completeTime = timestamp
+              }
+              break
+            }
+          }
+          return tag
+        })
+        this.saveDownloadRecord(data)
+        resolve(0)
+      }).catch((err) => {
+        reject(err)
+      })
+    })
+  }
+
   saveSession (params = {}) {
     return this.client.call('saveSession')
   }

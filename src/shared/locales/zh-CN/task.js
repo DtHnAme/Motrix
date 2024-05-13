@@ -51,6 +51,8 @@ export default {
   'task-peer-host': '服务器',
   'task-peer-ip': 'IP',
   'task-peer-client': '客户端',
+  'task-start-time': '开始时间',
+  'task-complete-time': '完成时间',
   'navigate-to-downloading': '跳转到下载页面',
   'show-advanced-options': '高级选项',
   'copyright-warning': '版权提醒',

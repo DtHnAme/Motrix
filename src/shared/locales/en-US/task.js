@@ -52,6 +52,8 @@ export default {
   'task-peer-host': 'Host',
   'task-peer-ip': 'IP',
   'task-peer-client': 'Client',
+  'task-start-time': 'Start Time',
+  'task-complete-time': 'Complete Time',
   'navigate-to-downloading': 'Navigate to Downloading',
   'show-advanced-options': 'Advanced Options',
   'copyright-warning': 'Copyright Warning',

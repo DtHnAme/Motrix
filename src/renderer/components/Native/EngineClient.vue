@@ -81,6 +81,7 @@
           .then((task) => {
             const { dir } = task
             this.$store.dispatch('preference/recordHistoryDirectory', dir)
+            this.$store.dispatch('task/recordDownloadEventTime', { event: 'start', task: task, timestamp: Date.now() })
             const taskName = getFileNameFromUrl(task)
             const message = this.$t('task.download-start-message', { taskName })
             this.$msg.info(message)
@@ -97,6 +98,7 @@
 
         this.fetchTaskItem({ gid })
           .then((task) => {
+            this.$store.dispatch('task/recordDownloadEventTime', { event: 'pause', task: task, timestamp: Date.now() })
             const taskName = getTaskName(task)
             const message = this.$t('task.download-pause-message', { taskName })
             this.$msg.info(message)
@@ -194,6 +196,7 @@
       },
       handleDownloadComplete (task, isBT) {
         this.$store.dispatch('task/saveSession')
+        this.$store.dispatch('task/recordDownloadEventTime', { event: 'complete', task: task, timestamp: Date.now() })
 
         const path = getTaskFullPath(task)
         this.showTaskCompleteNotify(task, isBT, path)

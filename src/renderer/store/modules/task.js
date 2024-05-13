@@ -129,6 +129,13 @@ const actions = {
   fetchDownloadRecord () {
     return api.fetchDownloadRecord()
   },
+  recordDownloadEventTime ({ dispatch }, data) {
+    const { event, task, timestamp } = data
+    return api.saveTimeStamp({ event, task, timestamp })
+      .then(() => {
+        dispatch('fetchList')
+      })
+  },
   addUri ({ dispatch }, data) {
     const { uris, outs, options } = data
     return api.addUri({ uris, outs, options })
