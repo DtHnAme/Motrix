@@ -145,6 +145,18 @@ export class JSONRPCClient extends EventEmitter {
       }, 1000)
       return true
     }
+    const error = (message) => {
+      if (message.error) {
+        this.emit('error', new JSONRPCError(message.error))
+        return true
+      } else if (Array.isArray(message.result)) {
+        const result = message.result.filter(result => result.code)
+        if (result.length > 0) {
+          this.emit('error', new JSONRPCError(result[0]))
+          return true
+        }
+      }
+      return false
     }
 
     socket.onclose = (...args) => {
@@ -160,7 +172,9 @@ export class JSONRPCClient extends EventEmitter {
         this.emit('error', err)
         return
       }
-      this._onmessage(message)
+      if (!error(message)) {
+        this._onmessage(message)
+      }
     }
     socket.onopen = (...args) => {
       this.emit('open', ...args)
