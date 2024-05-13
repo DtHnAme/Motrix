@@ -129,7 +129,10 @@ export class JSONRPCClient extends EventEmitter {
 
   async open () {
     const socket = (this.socket = new WebSocket(this.url('ws')))
-    const reconnect = () => {
+    const reconnect = (...args) => {
+      if (args[0].code === 1000) {
+        return false
+      }
       setTimeout(() => {
         const event = {
           type: 'connecting',
@@ -140,12 +143,12 @@ export class JSONRPCClient extends EventEmitter {
           console.log('try reconnect socket error:', err)
         })
       }, 1000)
+      return true
+    }
     }
 
     socket.onclose = (...args) => {
-      if (args[0].code !== 1000) {
-        reconnect()
-      } else {
+      if (!reconnect(...args)) {
         this.emit('close', ...args)
       }
     }
