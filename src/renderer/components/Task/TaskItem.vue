@@ -119,6 +119,7 @@
     overflow : hidden;
     text-overflow: ellipsis;
     display: -webkit-box;
+    white-space: nowrap;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
   }
