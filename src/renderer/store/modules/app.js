@@ -184,6 +184,9 @@ const actions = {
   resetInterval ({ commit }) {
     commit('UPDATE_INTERVAL', BASE_INTERVAL)
   },
+  changeEngineStatus (_, status) {
+    api.changeEngineStatus({ status })
+  },
   fetchProgress ({ commit }) {
     api.fetchActiveTaskList()
       .then((data) => {

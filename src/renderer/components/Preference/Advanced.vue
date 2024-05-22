@@ -420,6 +420,9 @@
             <el-button plain type="danger" @click="() => onFactoryResetClick()">
               {{ $t('preferences.factory-reset') }}
             </el-button>
+            <el-button plain :type="engineType" @click="() => onEngineStatusChangeClick()">
+              {{engineStatusString}}
+            </el-button>
           </el-col>
         </el-form-item>
       </el-form>
@@ -454,7 +457,8 @@
     ENGINE_RPC_PORT,
     LOG_LEVELS,
     TRACKER_SOURCE_OPTIONS,
-    PROXY_SCOPE_OPTIONS
+    PROXY_SCOPE_OPTIONS,
+    ENGINE_STATUS
   } from '@shared/constants'
   import {
     buildRpcUrl,
@@ -567,6 +571,12 @@
       },
       logLevels () {
         return LOG_LEVELS
+      },
+      engineType () {
+        return this.$store.state.app.engineStatus !== ENGINE_STATUS.CONNECTED ? 'success' : 'danger'
+      },
+      engineStatusString () {
+        return this.$store.state.app.engineStatus !== ENGINE_STATUS.CONNECTED ? this.$t('app.start-engine') : this.$t('app.stop-engine')
       },
       ...mapState('preference', {
         config: state => state.config,
@@ -713,6 +723,14 @@
             this.$electron.ipcRenderer.send('command', 'application:factory-reset')
           }
         })
+      },
+      onEngineStatusChangeClick () {
+        const status = this.$store.state.app.engineStatus
+        if (status === ENGINE_STATUS.CONNECTED) {
+          this.$store.dispatch('app/changeEngineStatus', 'stop')
+        } else {
+          this.$store.dispatch('app/changeEngineStatus', 'start')
+        }
       },
       syncFormConfig () {
         this.$store.dispatch('preference/fetchPreference')

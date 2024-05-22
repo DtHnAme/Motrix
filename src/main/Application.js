@@ -893,6 +893,23 @@ export default class Application extends EventEmitter {
       }
     })
 
+    this.on('application:change-engine-status', async (status) => {
+      switch (status) {
+      case 'start':
+        this.engine.start()
+        break
+      case 'stop':
+        await this.stopEngine()
+        break
+      case 'restart':
+        await this.stopEngine()
+        setImmediate(() => {
+          this.engine.start()
+        })
+        break
+      }
+    })
+
     this.on('help:official-website', () => {
       const url = 'https://motrix.app/'
       this.openExternal(url)

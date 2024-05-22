@@ -31,6 +31,8 @@ export default {
   'hour': 'h',
   'minute': 'm',
   'second': 's',
+  'start-engine': 'Start Engine',
+  'stop-engine': 'Stop Engine',
   'engine-connected-message': 'Engine Connected',
   'engine-connecting-message': 'Engine Connecting...',
   'engine-disconnected-message': 'Engine Disconnected',

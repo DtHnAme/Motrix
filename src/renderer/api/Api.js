@@ -200,6 +200,11 @@ export default class Api {
     })
   }
 
+  changeEngineStatus (params = {}) {
+    const { status } = params
+    ipcRenderer.send('command', 'application:change-engine-status', status)
+  }
+
   updateActiveTaskOption (options) {
     this.fetchTaskList({ type: 'active' })
       .then((data) => {

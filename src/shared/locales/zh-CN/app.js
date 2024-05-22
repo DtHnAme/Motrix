@@ -31,6 +31,8 @@ export default {
   'hour': '时',
   'minute': '分',
   'second': '秒',
+  'start-engine': '启动引擎',
+  'stop-engine': '关闭引擎',
   'engine-connected-message': '引擎已连接',
   'engine-connecting-message': '引擎正在连接...',
   'engine-disconnected-message': '引擎已断开',
