@@ -283,6 +283,7 @@
         api.client.removeListener('onDownloadComplete', this.onDownloadComplete)
         api.client.removeListener('onDownloadError', this.onDownloadError)
         api.client.removeListener('onBtDownloadComplete', this.onBtDownloadComplete)
+        api.client.removeListener('onEngineStatusChanged', this.onEngineStatusChanged)
       },
       startPolling () {
         this.timer = setTimeout(() => {
