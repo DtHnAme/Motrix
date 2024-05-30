@@ -205,6 +205,20 @@ export default class Api {
     ipcRenderer.send('command', 'application:change-engine-status', status)
   }
 
+  changeClientStatus (params = {}) {
+    const { status } = params
+    switch (status) {
+    case 'open':
+    case 'start':
+      this.openClient()
+      break
+    case 'close':
+    case 'stop':
+      this.closeClient()
+      break
+    }
+  }
+
   updateActiveTaskOption (options) {
     this.fetchTaskList({ type: 'active' })
       .then((data) => {

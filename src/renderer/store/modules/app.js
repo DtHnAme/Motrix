@@ -187,6 +187,9 @@ const actions = {
   changeEngineStatus (_, status) {
     api.changeEngineStatus({ status })
   },
+  changeClientStatus (_, status) {
+    api.changeClientStatus({ status })
+  },
   fetchProgress ({ commit }) {
     api.fetchActiveTaskList()
       .then((data) => {

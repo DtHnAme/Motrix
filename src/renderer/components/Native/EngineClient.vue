@@ -165,6 +165,7 @@
         }
 
         const connected = status === ENGINE_STATUS.CONNECTED
+        const connecting = status === ENGINE_STATUS.CONNECTING
 
         const statusTypeMap = {
           [ENGINE_STATUS.CONNECTED]: 'success',
@@ -180,6 +181,15 @@
 
         if (this.lastStatusMsg) {
           this.lastStatusMsg.close()
+        }
+
+        if (connecting) {
+          this.closeClientTimer = setTimeout(() => {
+            this.$store.dispatch('app/changeClientStatus', 'close')
+          }, 10000)
+        } else {
+          clearTimeout(this.closeClientTimer)
+          this.closeClientTimer = null
         }
 
         this.lastStatusMsg = this.$msg({
